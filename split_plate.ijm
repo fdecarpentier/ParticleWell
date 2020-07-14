@@ -25,7 +25,7 @@ for (i=0; i<y.length; i++) {
 
 for(i=0; i<x.length; i++) {
 	for(j=0; j<y.length; j++){
-		makeRectangle(x[i], y[j], 1820, 1820);
+		makeRectangle(x[i], y[j], 2400, 2400);
 		run("Duplicate...", " ");
 		rename(i+"-"+j);
 		saveAs("Jpeg", outputFolder+title+"-"+j+"-"+i+".jpg");

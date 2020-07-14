@@ -9,9 +9,9 @@ outputFolder=getDirectory("Choose output folder for the results");
 
 //Dialog box to set the scale
 Dialog.create("Options");
-Dialog.addNumber("Measured distance (pixel)", 1750);
-Dialog.addNumber("Known distance (mm)", 150); 
-Dialog.addNumber("Minimum area (mm^2)", 0.05);
+Dialog.addNumber("Measured distance (pixel)", 2316);
+Dialog.addNumber("Known distance (mm)", 1700); 
+Dialog.addNumber("Minimum area (mm"+fromCharCode(0x00B2)+")", 0.05);
 Dialog.addCheckbox("Manual Threshold", true);
 Dialog.addCheckbox("Reposition selection circle", true);
 Dialog.show();
@@ -27,7 +27,7 @@ run("Text Window...", "name=Processed width=40 height=30 monospaced");
 if (manual!=true) {
 	if (circleselect!=true) setBatchMode(true);
 	} 
-run("Set Measurements...", "area mean perimeter shape limit redirect=None decimal=3");
+run("Set Measurements...", "area mean perimeter shape limit redirect=None decimal=4");
 run("Clear Results");
 
 //Puts the name of the files in a list and process each image
@@ -80,7 +80,7 @@ for(i=0; i<list.length; i++) {
 		//Delete the circle ROI 
 		width = getWidth;
   		height = getHeight;
-  		shrk = 600; //Set the shinking length here
+  		shrk = 800; //Set the shinking length here
   		pos = shrk/2;
   		makeOval(pos, pos, width-shrk, height-shrk);
   		if (circleselect != false) waitForUser("Place Circle", "Place the circle on the desired area");
@@ -114,8 +114,8 @@ for(i=0; i<list.length; i++) {
 	print("[Processed]", list[i]+"\n"); //print the finished image in thr Log window
 }
 closeWin("ROI Manager");
-waitForUser("Work done", "WORK DONE: Close all windows?");
 saveAs("results", outputFolder+ "results"+ ".csv"); 
+waitForUser("Work done", "WORK DONE: Close all windows?");
 closeWin("Results"); 
 closeWin("Processed");
 setBatchMode(false);
