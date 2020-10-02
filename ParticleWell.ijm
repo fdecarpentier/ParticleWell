@@ -9,15 +9,17 @@ outputFolder=getDirectory("Choose output folder for the results");
 
 //Dialog box to set the scale
 Dialog.create("Options");
-Dialog.addNumber("Measured distance (pixel)", 2316);
-Dialog.addNumber("Known distance (mm)", 1700); 
-Dialog.addNumber("Minimum area (mm"+fromCharCode(0x00B2)+")", 0.05);
+Dialog.addNumber("Measured distance (pixel)", 1938);
+Dialog.addNumber("Known distance (mm)", 16.5); 
+Dialog.addNumber("Minimum area (mm"+fromCharCode(0x00B2)+")", 0.00);
+Dialog.addNumber("Threshold correction", 10.0);
 Dialog.addCheckbox("Manual Threshold", true);
 Dialog.addCheckbox("Reposition selection circle", true);
 Dialog.show();
 disPix = Dialog.getNumber();
 disKnown = Dialog.getNumber();
 minArea = Dialog.getNumber();
+thldCor = Dialog.getNumber();
 manual = Dialog.getCheckbox();
 circleselect = Dialog.getCheckbox();
 
@@ -71,7 +73,9 @@ for(i=0; i<list.length; i++) {
 			getThreshold(lower, upper);
 			if (lower==-1) exit("Threshold was not set");
 		} else {
-			setAutoThreshold("Huang"); //Alternatively use "Default"
+			setAutoThreshold("Default");
+        	getThreshold(lower,upper);
+        	setThreshold(lower,upper + thldCor);
 		}
 		setOption("BlackBackground", false);
 		run("Convert to Mask");
@@ -83,7 +87,10 @@ for(i=0; i<list.length; i++) {
   		shrk = 800; //Set the shinking length here
   		pos = shrk/2;
   		makeOval(pos, pos, width-shrk, height-shrk);
-  		if (circleselect != false) waitForUser("Place Circle", "Place the circle on the desired area");
+  		if (circleselect != false) {
+  			setTool("oval");
+  			waitForUser("Place Circle", "Place the circle on the desired area");
+  		}
 		setBackgroundColor(255, 255, 255);
 		run("Clear Outside");
 		
@@ -114,6 +121,7 @@ for(i=0; i<list.length; i++) {
 	print("[Processed]", list[i]+"\n"); //print the finished image in thr Log window
 }
 closeWin("ROI Manager");
+closeWin("Threshold");
 saveAs("results", outputFolder+ "results"+ ".csv"); 
 waitForUser("Work done", "WORK DONE: Close all windows?");
 closeWin("Results"); 

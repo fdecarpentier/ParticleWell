@@ -31,6 +31,6 @@ for(i=0; i<x.length; i++) {
 		saveAs("Jpeg", outputFolder+title+"-"+j+"-"+i+".jpg");
 		close();	
 	}
-	showProgress(i, x.length); //Shows a progress bar
+	showProgress(i+1, x.length); //Shows a progress bar
 }
 setBatchMode(false);
