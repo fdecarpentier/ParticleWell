@@ -25,6 +25,7 @@ manual = Dialog.getCheckbox();
 circleselect = Dialog.getCheckbox();
 circleDiam = Dialog.getNumber();
 
+//print the infos in the Log window
 manualStr = boleanstring(manual);
 circleselectStr = boleanstring(circleselect);
 print(
@@ -35,7 +36,7 @@ print(
 	"Manual Threshold : "+ manualStr+ "\n"+
 	"Reposition selection circle : "+ circleselectStr+ "\n"+ 
 	"Circle diameter (mm) : "+ circleDiam
-	); //print the infos in the Log window
+	); 
 
 run("Text Window...", "name=Processed width=40 height=30 monospaced");
 
