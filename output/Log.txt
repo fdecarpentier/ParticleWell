@@ -1,0 +1,7 @@
+Measured distance (pixel) : 1450
+Known distance (mm) : 16
+Minimum area (mm²) : 0
+Threshold correction : 10
+Manual Threshold : No
+Reposition selection circle : No
+Circle diameter (mm) : 13

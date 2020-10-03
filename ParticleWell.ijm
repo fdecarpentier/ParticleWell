@@ -9,12 +9,13 @@ outputFolder=getDirectory("Choose output folder for the results");
 
 //Dialog box to set the scale
 Dialog.create("Options");
-Dialog.addNumber("Measured distance (pixel)", 1938);
-Dialog.addNumber("Known distance (mm)", 16.5); 
+Dialog.addNumber("Measured distance (pixel)", 1450);
+Dialog.addNumber("Known distance (mm)", 16.0); 
 Dialog.addNumber("Minimum area (mm"+fromCharCode(0x00B2)+")", 0.00);
 Dialog.addNumber("Threshold correction", 10.0);
-Dialog.addCheckbox("Manual Threshold", true);
-Dialog.addCheckbox("Reposition selection circle", true);
+Dialog.addCheckbox("Manual Threshold", false);
+Dialog.addCheckbox("Reposition selection circle", false);
+Dialog.addNumber("Circle diameter (mm)", 13.0);
 Dialog.show();
 disPix = Dialog.getNumber();
 disKnown = Dialog.getNumber();
@@ -22,6 +23,19 @@ minArea = Dialog.getNumber();
 thldCor = Dialog.getNumber();
 manual = Dialog.getCheckbox();
 circleselect = Dialog.getCheckbox();
+circleDiam = Dialog.getNumber();
+
+manualStr = boleanstring(manual);
+circleselectStr = boleanstring(circleselect);
+print(
+	"Measured distance (pixel) : "+ disPix + "\n"+ 
+	"Known distance (mm) : "+ disKnown + "\n"+ 
+	"Minimum area (mm"+fromCharCode(0x00B2)+") : "+ minArea+ "\n"+ 
+	"Threshold correction : "+ thldCor+ "\n"+ 
+	"Manual Threshold : "+ manualStr+ "\n"+
+	"Reposition selection circle : "+ circleselectStr+ "\n"+ 
+	"Circle diameter (mm) : "+ circleDiam
+	); //print the infos in the Log window
 
 run("Text Window...", "name=Processed width=40 height=30 monospaced");
 
@@ -74,26 +88,27 @@ for(i=0; i<list.length; i++) {
 			if (lower==-1) exit("Threshold was not set");
 		} else {
 			setAutoThreshold("Default");
-        	getThreshold(lower,upper);
-        	setThreshold(lower,upper + thldCor);
+			getThreshold(lower,upper);
+			setThreshold(lower,upper + thldCor);
 		}
 		setOption("BlackBackground", false);
 		run("Convert to Mask");
-		//run("Fill Holes"); //Fill holes is not very usefull and can make issues with the wells edges
 		
-		//Delete the circle ROI 
-		width = getWidth;
-  		height = getHeight;
-  		shrk = 800; //Set the shinking length here
-  		pos = shrk/2;
-  		makeOval(pos, pos, width-shrk, height-shrk);
-  		if (circleselect != false) {
-  			setTool("oval");
-  			waitForUser("Place Circle", "Place the circle on the desired area");
-  		}
+		//Delete ROI outside of the circle 
+		widthPix = getWidth;
+		heightPix = getHeight;
+		circleDiamPix = circleDiam*(disPix/disKnown);
+		posx = (widthPix - circleDiamPix)/2;
+		posy = (heightPix - circleDiamPix)/2;
+		makeOval(posx, posy, circleDiamPix, circleDiamPix);
+		if (circleselect != false) {
+			setTool("oval");
+			waitForUser("Place Circle", "Place the circle on the desired area");
+		}
 		setBackgroundColor(255, 255, 255);
 		run("Clear Outside");
-		
+		//run("Fill Holes"); //Fill holes is not very usefull and can make issues with the wells edges
+
 		//Analyse Particles and fill the result table in tidy format
 		run("Analyze Particles...","size="+minArea+"-Infinity add display");
 		if (roiManager("Count") > 0) {
@@ -118,12 +133,15 @@ for(i=0; i<list.length; i++) {
 		close("*");
 	}
 	showProgress(i, list.length); //Shows a progress bar  
-	print("[Processed]", list[i]+"\n"); //print the finished image in thr Log window
+	print("[Processed]", list[i]+"\n"); //print the finished image in a new "Processed" window
 }
 closeWin("ROI Manager");
 closeWin("Threshold");
 saveAs("results", outputFolder+ "results"+ ".csv"); 
+selectWindow("Log");
+saveAs("Text", outputFolder+ "Log"+ ".txt");
 waitForUser("Work done", "WORK DONE: Close all windows?");
+closeWin("Log");
 closeWin("Results"); 
 closeWin("Processed");
 setBatchMode(false);
@@ -135,4 +153,14 @@ function closeWin(winName)
 		selectWindow(winName);
 		run("Close");
 	}
+}
+
+function boleanstring(variable)
+{
+	if (variable == true) {
+		varStr = "Yes";
+	} else {
+		varStr = "No";
+	}
+	return varStr;
 }
