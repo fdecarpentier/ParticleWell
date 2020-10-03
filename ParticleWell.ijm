@@ -16,6 +16,7 @@ Dialog.addNumber("Threshold correction", 10.0);
 Dialog.addCheckbox("Manual Threshold", false);
 Dialog.addCheckbox("Reposition selection circle", false);
 Dialog.addNumber("Circle diameter (mm)", 13.0);
+Dialog.addCheckbox("Save filtered image", false);
 Dialog.show();
 disPix = Dialog.getNumber();
 disKnown = Dialog.getNumber();
@@ -24,6 +25,7 @@ thldCor = Dialog.getNumber();
 manual = Dialog.getCheckbox();
 circleselect = Dialog.getCheckbox();
 circleDiam = Dialog.getNumber();
+saveFiltered = Dialog.getCheckbox();
 
 //print the infos in the Log window
 manualStr = boleanstring(manual);
@@ -79,7 +81,7 @@ for(i=0; i<list.length; i++) {
 		
 		//Threshold corrected image
 		selectWindow("Result of "+list[i]+"-bw");
-		saveAs("Jpeg", outputPath+"-subtr"+ ".jpg");
+		if (saveFiltered == true) saveAs("Jpeg", outputPath+"-subtr"+ ".jpg");
 		run("Gaussian Blur...", "sigma=2"); //Blur the particles to be sure to select the objects and not the sub-objects
 		if (manual != false) {
 			run("Threshold...");
@@ -104,7 +106,7 @@ for(i=0; i<list.length; i++) {
 		makeOval(posx, posy, circleDiamPix, circleDiamPix);
 		if (circleselect != false) {
 			setTool("oval");
-			waitForUser("Place Circle", "Place the circle on the desired area");
+			waitForUser("Place Circle", "Place the circle on the desired zone");
 		}
 		setBackgroundColor(255, 255, 255);
 		run("Clear Outside");
