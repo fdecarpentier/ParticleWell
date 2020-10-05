@@ -9,12 +9,12 @@ outputFolder=getDirectory("Choose output folder for the results");
 
 //Dialog box to set the scale
 Dialog.create("Options");
-Dialog.addNumber("Measured distance (pixel)", 1450);
+Dialog.addNumber("Measured distance (pixel)", 1445);
 Dialog.addNumber("Known distance (mm)", 16.0); 
-Dialog.addNumber("Minimum area (mm"+fromCharCode(0x00B2)+")", 0.00);
+Dialog.addNumber("Minimum area (mm"+fromCharCode(0x00B2)+")", 0.0);
 Dialog.addNumber("Threshold correction", 10.0);
 Dialog.addCheckbox("Manual Threshold", false);
-Dialog.addCheckbox("Reposition selection circle", false);
+Dialog.addCheckbox("Reposition selection circle", true);
 Dialog.addNumber("Circle diameter (mm)", 13.0);
 Dialog.addCheckbox("Save filtered image", false);
 Dialog.show();
