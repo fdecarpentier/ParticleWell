@@ -6,7 +6,7 @@ PLOS ONE 9, no 3: e92444. https://doi.org/10.1371/journal.pone.0092444. */
 //Allows the user to choose the folder containing the images and the folder for the results 
 outputFolder=getDirectory("Choose output folder for the results");
 
-setBatchMode(true); //In batch mode the windows are not shown so it is faster.
+setBatchMode(false); //In batch mode the windows are not shown so it is faster.
 title = getTitle();
 fileExtension=lastIndexOf(title,"."); 
 if(fileExtension!=-1) title=substring(title,0,fileExtension);
@@ -29,6 +29,12 @@ for(i=0; i<x.length; i++) {
 		run("Duplicate...", " ");
 		rename(i+"-"+j);
 		saveAs("Jpeg", outputFolder+title+"-"+j+"-"+i+".jpg");
+		setTool("oval");
+		makeOval(240, 240, 1910, 1910);
+		waitForUser("Place Circle", "Place the circle on the desired position");
+		setBackgroundColor(255, 255, 255);
+		run("Clear Outside");
+		saveAs("Jpeg", outputFolder+"c-"+ title+"-"+j+"-"+i+".jpg");
 		close();	
 	}
 	showProgress(i+1, x.length); //Shows a progress bar

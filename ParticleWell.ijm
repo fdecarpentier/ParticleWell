@@ -9,10 +9,15 @@ outputFolder=getDirectory("Choose output folder for the results");
 
 //Dialog box to set the scale
 Dialog.create("Options");
-Dialog.addNumber("Measured distance (pixel)", 1445);
+Dialog.addNumber("Measured distance (pixel)", 1925);
 Dialog.addNumber("Known distance (mm)", 16.0); 
 Dialog.addNumber("Minimum area (mm"+fromCharCode(0x00B2)+")", 0.0);
 Dialog.addNumber("Threshold correction", 10.0);
+Dialog.addChoice("Threshold method", 
+	newArray("Default", "Huang", "Intermodes", "IsoData", "IJ_IsoData", "Li", "MaxEntropy", 
+		"Mean", "MinError", "Minimum", "Moments", "Otsu", "Percentile", "RenyiEntropy", 
+		"Shanbhag", "Triangle", "Yen"),
+	"Default");
 Dialog.addCheckbox("Manual Threshold", false);
 Dialog.addCheckbox("Reposition selection circle", true);
 Dialog.addNumber("Circle diameter (mm)", 13.0);
@@ -22,6 +27,7 @@ disPix = Dialog.getNumber();
 disKnown = Dialog.getNumber();
 minArea = Dialog.getNumber();
 thldCor = Dialog.getNumber();
+thldMethod = Dialog.getChoice();
 manual = Dialog.getCheckbox();
 circleselect = Dialog.getCheckbox();
 circleDiam = Dialog.getNumber();
@@ -90,7 +96,7 @@ for(i=0; i<list.length; i++) {
 			getThreshold(lower, upper);
 			if (lower==-1) exit("Threshold was not set");
 		} else {
-			setAutoThreshold("Default");
+			setAutoThreshold(thldMethod);
 			getThreshold(lower,upper);
 			setThreshold(lower,upper + thldCor);
 		}
@@ -106,7 +112,7 @@ for(i=0; i<list.length; i++) {
 		makeOval(posx, posy, circleDiamPix, circleDiamPix);
 		if (circleselect != false) {
 			setTool("oval");
-			waitForUser("Place Circle", "Place the circle on the desired zone");
+			waitForUser("Place Circle", "Place the circle on the desired position");
 		}
 		setBackgroundColor(255, 255, 255);
 		run("Clear Outside");
