@@ -4,9 +4,20 @@ Inspired by Guzmán, Camilo, Manish Bagga, Amanpreet Kaur, Jukka Westermarck, an
 PLOS ONE 9, no 3: e92444. https://doi.org/10.1371/journal.pone.0092444. */
 
 //Allows the user to choose the folder containing the images and the folder for the results 
+remove_dust = false;
+make_circle = false;
+
+setBackgroundColor(255, 255, 255);
+setForegroundColor(255, 255, 255);
+if (remove_dust == true) run("Paintbrush Tool Options...", "brush=30");
 outputFolder=getDirectory("Choose output folder for the results");
 
-setBatchMode(false); //In batch mode the windows are not shown so it is faster.
+if (make_circle == true) {
+	setBatchMode(false); //In batch mode the windows are not shown so it is faster.
+} else {
+	setBatchMode(true);
+}
+
 title = getTitle();
 fileExtension=lastIndexOf(title,"."); 
 if(fileExtension!=-1) title=substring(title,0,fileExtension);
@@ -24,18 +35,25 @@ for (i=0; i<y.length; i++) {
 }
 
 for(i=0; i<x.length; i++) {
-	for(j=0; j<y.length; j++){
+	for(j=0; j<y.length; j++) {
 		makeRectangle(x[i], y[j], 2400, 2400);
 		run("Duplicate...", " ");
 		rename(i+"-"+j);
+		if (remove_dust == true) {
+			setTool("Paintbrush Tool");
+			waitForUser("Erase", "Erase dust in needed");
+		}
 		saveAs("Jpeg", outputFolder+title+"-"+j+"-"+i+".jpg");
-		setTool("oval");
-		makeOval(240, 240, 1910, 1910);
-		waitForUser("Place Circle", "Place the circle on the desired position");
-		setBackgroundColor(255, 255, 255);
-		run("Clear Outside");
-		saveAs("Jpeg", outputFolder+"c-"+ title+"-"+j+"-"+i+".jpg");
-		close();	
+		if (make_circle == true) {
+			setTool("oval");
+			makeOval(240, 240, 1910, 1910);
+			waitForUser("Place Circle", "Place the circle on the desired position");
+			run("Duplicate...", " ");
+			run("Clear Outside");
+			saveAs("Jpeg", outputFolder+"c-"+ title+"-"+j+"-"+i+".jpg");
+			close();
+		}
+		close();
 	}
 	showProgress(i+1, x.length); //Shows a progress bar
 }

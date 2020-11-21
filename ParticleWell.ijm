@@ -89,16 +89,15 @@ for(i=0; i<list.length; i++) {
 		selectWindow("Result of "+list[i]+"-bw");
 		if (saveFiltered == true) saveAs("Jpeg", outputPath+"-subtr"+ ".jpg");
 		run("Gaussian Blur...", "sigma=2"); //Blur the particles to be sure to select the objects and not the sub-objects
+		setAutoThreshold(thldMethod);
+		getThreshold(lower,upper);
+		setThreshold(lower,upper + thldCor);
 		if (manual != false) {
 			run("Threshold...");
 			waitForUser("Adjust Threshold", "If necessary, use the \"Threshold\" tool to\nadjust the threshold, then click \"OK\".");
 			selectImage("Result of "+list[i]+"-bw");  //make sure we still have the same image
 			getThreshold(lower, upper);
 			if (lower==-1) exit("Threshold was not set");
-		} else {
-			setAutoThreshold(thldMethod);
-			getThreshold(lower,upper);
-			setThreshold(lower,upper + thldCor);
 		}
 		setOption("BlackBackground", false);
 		run("Convert to Mask");
